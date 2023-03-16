@@ -17,11 +17,11 @@ public class Main {
                     System.out.print((char)buffer[i]);
                 }
             }
-
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
 
-        Frame frame = new Frame(1000);
+        Frame frame = new Frame(600, true);
+        Frame allNumbers = new Frame(600, false);
     }
 }

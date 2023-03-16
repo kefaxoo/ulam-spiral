@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.io.*;
 
 public class Frame extends java.awt.Frame {
-    public Frame(int size) {
+
+    private boolean isPrime = false;
+
+    public Frame(int size, boolean isPrime) {
         setSize(size, size);
         setBackground(null);
         setVisible(true);
         setTitle("Ulam spiral");
         setResizable(false);
+        this.isPrime = isPrime;
         int x = size / 2 - 20;
         int y = size / 2 + 20;
         int dx = 1;
@@ -20,7 +24,7 @@ public class Frame extends java.awt.Frame {
         int number = 1;
         double angle = 0.0;
         int maxValue = 1;
-        do {
+        while ((x > 5 && x + 5 < size) && (y > 20 && y + 20 < size)) {
             if (number - 1 == turn) {
                 angle += 90;
                 if ((dx == 0 && dy == -1) || (dx == 0 && dy == 1)) {
@@ -37,39 +41,43 @@ public class Frame extends java.awt.Frame {
             y += dy * 50;
             number += 1;
             maxValue = number;
-        } while ((x > 5 && x + 5 < size) && (y > 20 && y + 20 < size));
-
-        var listOfNumbers = new ArrayList<ArrayList<Integer>>();
-
-        for (int i = 2; i <= maxValue; i++) {
-            if (isPrimeNumber(i, 2)) {
-                if (listOfNumbers.size() < decimalToBytes(i).length() / 8) {
-                    listOfNumbers.add(new ArrayList<Integer>());
-                }
-
-                listOfNumbers.get((decimalToBytes(i).length() / 8) - 1).add(i);
-            }
         }
 
-        try (FileOutputStream fos = new FileOutputStream("result.bin")) {
-            StringBuilder line = new StringBuilder();
-            for (var numbers: listOfNumbers) {
-                line.append(numbers.size() + " ");
-                for (int i = 0; i < numbers.size(); i++) {
-                    line.append(numbers.get(i));
-                    if (i != numbers.size() - 1) {
-                        line.append(" ");
-                    } else {
-                        line.append('\n');
+        if (isPrime) {
+            var listOfNumbers = new ArrayList<ArrayList<Integer>>();
+
+            for (int i = 2; i <= maxValue; i++) {
+                if (isPrimeNumber(i, 2)) {
+                    if (listOfNumbers.size() < decimalToBytes(i).length() / 8) {
+                        listOfNumbers.add(new ArrayList<Integer>());
                     }
-                }
 
-                fos.write(String.valueOf(line).getBytes(), 0, String.valueOf(line).getBytes().length);
-                line = new StringBuilder();
+                    listOfNumbers.get((decimalToBytes(i).length() / 8) - 1).add(i);
+                }
             }
-        } catch (IOException exception) {
-            System.out.println(exception.getMessage());
+
+            try (FileOutputStream fos = new FileOutputStream("result.bin")) {
+                StringBuilder line = new StringBuilder();
+                for (var numbers: listOfNumbers) {
+                    line.append(numbers.size() + " ");
+                    for (int i = 0; i < numbers.size(); i++) {
+                        line.append(numbers.get(i));
+                        if (i != numbers.size() - 1) {
+                            line.append(" ");
+                        } else {
+                            line.append('\n');
+                        }
+                    }
+
+                    fos.write(String.valueOf(line).getBytes(), 0, String.valueOf(line).getBytes().length);
+                    line = new StringBuilder();
+                }
+            } catch (IOException exception) {
+                System.out.println(exception.getMessage());
+            }
         }
+
+
     }
 
     private boolean isPrimeNumber(int n, int step) {
@@ -95,15 +103,19 @@ public class Frame extends java.awt.Frame {
 
     private void drawSpiral(int number, int x, int y, double angle) {
         Label numberLabel = new Label(String.valueOf(number));
-        if (!isPrimeNumber(number, 2) || number == 1) {
-            if (angle % 180 == 0) {
-                numberLabel.setText("-");
-            } else {
-                numberLabel.setText("|");
+        if (isPrime) {
+            if (!isPrimeNumber(number, 2) || number == 1) {
+                if (angle % 180 == 0) {
+                    numberLabel.setText("-");
+                } else {
+                    numberLabel.setText("|");
+                }
             }
         }
 
+
         numberLabel.setBounds(x - 5, y - 20, 30, 30);
+        System.out.println("Number: " + number + " x: " + x + " y: " + y);
         this.add(numberLabel);
     }
 }
