@@ -7,6 +7,8 @@ import java.io.*;
 public class Frame extends java.awt.Frame {
 
     private boolean isPrime = false;
+    private int previousX;
+    private int previousY;
 
     public Frame(int size, boolean isPrime) {
         setSize(size, size);
@@ -15,8 +17,10 @@ public class Frame extends java.awt.Frame {
         setTitle("Ulam spiral");
         setResizable(false);
         this.isPrime = isPrime;
-        int x = size / 2 - 20;
-        int y = size / 2 + 20;
+        int x = size / 2;
+        previousX = x;
+        int y = size / 2;
+        previousY = y;
         int dx = 1;
         int dy = 0;
         int step = 1;
@@ -24,7 +28,7 @@ public class Frame extends java.awt.Frame {
         int number = 1;
         double angle = 0.0;
         int maxValue = 1;
-        while ((x > 5 && x + 5 < size) && (y > 20 && y + 20 < size)) {
+        while ((x > 0 && x < size) && (y > 0 && y < size)) {
             if (number - 1 == turn) {
                 angle += 90;
                 if ((dx == 0 && dy == -1) || (dx == 0 && dy == 1)) {
@@ -37,11 +41,17 @@ public class Frame extends java.awt.Frame {
             }
 
             drawSpiral(number, x, y, angle);
-            x += dx * 50;
-            y += dy * 50;
+            previousX = x;
+            previousY = y;
+            x += dx * 80;
+            y += dy * 80;
             number += 1;
             maxValue = number;
         }
+
+        var label = new Label("");
+        label.setBounds(-100, -100, 10, 10);
+        this.add(label);
 
         if (isPrime) {
             var listOfNumbers = new ArrayList<ArrayList<Integer>>();
@@ -76,8 +86,6 @@ public class Frame extends java.awt.Frame {
                 System.out.println(exception.getMessage());
             }
         }
-
-
     }
 
     private boolean isPrimeNumber(int n, int step) {
@@ -113,9 +121,28 @@ public class Frame extends java.awt.Frame {
             }
         }
 
-
-        numberLabel.setBounds(x - 5, y - 20, 30, 30);
-        System.out.println("Number: " + number + " x: " + x + " y: " + y);
+        numberLabel.setBounds(x, y, 30, 30);
         this.add(numberLabel);
+
+        if (previousX != x || previousY != y) {
+            Label lineLabel = new Label();
+            if (previousX == x) {
+                lineLabel.setText("|");
+                if (previousY - y < 0) {
+                    lineLabel.setBounds(x, previousY + 40, 20, 20);
+                } else {
+                    lineLabel.setBounds(x, previousY - 40, 20, 20);
+                }
+            } else if (previousY == y) {
+                lineLabel.setText("-");
+                if (previousX - x < 0) {
+                    lineLabel.setBounds(previousX + 40, y, 20, 20);
+                } else {
+                    lineLabel.setBounds(previousX - 40, y, 20, 20);
+                }
+            }
+
+            this.add(lineLabel);
+        }
     }
 }
