@@ -1,10 +1,10 @@
 package by.kefaxoo.frame;
 
-import java.awt.*;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.io.*;
 
-public class Frame extends java.awt.Frame {
+public class Frame extends javax.swing.JFrame {
 
     private boolean isPrime = false;
     private int previousX;
@@ -17,9 +17,9 @@ public class Frame extends java.awt.Frame {
         setTitle("Ulam spiral");
         setResizable(false);
         this.isPrime = isPrime;
-        int x = size / 2;
+        int x = size / 2 - 20;
         previousX = x;
-        int y = size / 2;
+        int y = size / 2 - 30;
         previousY = y;
         int dx = 1;
         int dy = 0;
@@ -49,7 +49,7 @@ public class Frame extends java.awt.Frame {
             maxValue = number;
         }
 
-        var label = new Label("");
+        var label = new JLabel("");
         label.setBounds(-100, -100, 10, 10);
         this.add(label);
 
@@ -110,7 +110,7 @@ public class Frame extends java.awt.Frame {
     }
 
     private void drawSpiral(int number, int x, int y, double angle) {
-        Label numberLabel = new Label(String.valueOf(number));
+        var numberLabel = new JLabel(String.valueOf(number));
         if (isPrime) {
             if (!isPrimeNumber(number, 2) || number == 1) {
                 if (angle % 180 == 0) {
@@ -125,7 +125,7 @@ public class Frame extends java.awt.Frame {
         this.add(numberLabel);
 
         if (previousX != x || previousY != y) {
-            Label lineLabel = new Label();
+            var lineLabel = new JLabel();
             if (previousX == x) {
                 lineLabel.setText("|");
                 if (previousY - y < 0) {
